@@ -23,7 +23,7 @@ steps:
 
 # Start Juice Shop server in background
 - script: nohup npm start &
-  workingDirectory: juice-shop
+  workingDirectory: playwright-javascript
   displayName: 'Start Juice Shop Server'
 
 # Run Playwright tests
