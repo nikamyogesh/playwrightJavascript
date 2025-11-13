@@ -1,0 +1,59 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# Checkout your Azure DevOps repo (self)
+- checkout: self
+
+# Install Node.js
+- task: NodeTool@0
+  inputs:
+    versionSpec: '22'
+  displayName: 'Install Node.js'
+
+# Navigate to Juice-Shop directory and install dependencies for Juice-Shop test project
+- script: npm install
+  displayName: 'Install Test Project Dependencies'
+
+# Install Playwright browsers
+- script: npx playwright install --with-deps
+  displayName: 'Install Playwright Browsers'
+
+# Start Juice Shop server in background
+- script: nohup npm start &
+  workingDirectory: juice-shop
+  displayName: 'Start Juice Shop Server'
+
+# Run Playwright tests
+- script: npx playwright test
+  displayName: 'Run Playwright Tests'
+  env:
+    CI: 'true'
+
+# Publish test results
+- task: PublishTestResults@2
+  inputs:
+    searchFolder: 'test-results'
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'e2e-junit-results.xml'
+    mergeTestResults: true
+    failTaskOnFailedTests: true
+    testRunTitle: 'My End-To-End Tests'
+  displayName: 'Publish Test Results'
+  condition: succeededOrFailed()
+
+# Publish Playwright report
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: playwright-report
+    artifact: playwright-report
+    publishLocation: 'pipeline'
+  displayName: 'Publish Playwright Report'
+  condition: succeededOrFailed()
+
+- powershell: |
+    Get-Process node | Where-Object { $_.Path -like "*juice-shop*" } | ForEach-Object { Stop-Process $_.Id -Force }
+  displayName: 'Stop Juice Shop Server'
+  condition: always()
