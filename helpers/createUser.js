@@ -35,4 +35,5 @@ async function createUser(request) {
 }
 
 // Export the function
-module.exports = { createUser };
+//module.exports = { createUser };
+export { createUser };

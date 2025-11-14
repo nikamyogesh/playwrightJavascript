@@ -40,11 +40,8 @@ const placeOrderPayload = {
 
 
 // Export the payloads
-module.exports = {
-
+export {
     getLoginPayload,
     getBasketAddPayload,
     placeOrderPayload
-
-
 };

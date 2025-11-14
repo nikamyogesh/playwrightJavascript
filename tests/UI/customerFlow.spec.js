@@ -1,8 +1,8 @@
-const { test, expect } = require('@playwright/test');
-const { createUser } = require('../../helpers/createUser');
-const LoginPage = require('../../pages/loginpage');
-const ProductsPage = require('../../pages/productspage');
-const CheckoutPage = require('../../pages/checkoutpage');
+//import { test, expect } from '@playwright/test';
+import { test, expect } from '../../pages/base.js';
+import { createUser } from '../../helpers/createUser.js';
+//import { LoginPage, ProductsPage, CheckoutPage } from '../../pages/index.js';
+
 
 test.describe('OWASP Juice Shop Login Flow', () => {
 
@@ -15,33 +15,15 @@ test.describe('OWASP Juice Shop Login Flow', () => {
 
   });
 
-  // Navigate to login page and dismiss welcome banner if displayed
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/#/login');
-
-    const dismissButton = page.locator('button.close-dialog');
-    try {
-      // Wait up to 2 seconds for the button to become visible
-      await dismissButton.waitFor({ state: 'visible', timeout: 2000 });
-      await dismissButton.click();
-    } catch {
-      // Ignore if the dismiss button never appears
-      console.log('No dismiss banner found.');
-    }
-  });
-
 
   // Test: login with valid credentials
-  test('Login with valid credentials user', async ({ page }) => {
-
-    // Create a new instance of LoginPage object
-    const loginPage = new LoginPage(page);
+  test('Login with valid credentials user', async ({
+    loginPage,
+    productsPage
+  }) => {
 
     // Fill in valid credentials
     await loginPage.login(testUser.email, 'Test@2025');
-
-    // Create a new instance of ProductsPage object
-    const productsPage = new ProductsPage(page);
 
     // verify products page is loaded
     await productsPage.verifyProductsPageLoaded();
@@ -50,10 +32,9 @@ test.describe('OWASP Juice Shop Login Flow', () => {
 
 
   // Test: login with invalid credentials
-  test('Login with invalid credentials user', async ({ page }) => {
-
-    // Create a new instance of LoginPage object
-    const loginPage = new LoginPage(page);
+  test('Login with invalid credentials user', async ({
+    loginPage
+  }) => {
 
     // Login with invalid credentials
     await loginPage.login('wrong@example.com', 'WrongPass123');
@@ -64,16 +45,13 @@ test.describe('OWASP Juice Shop Login Flow', () => {
   });
 
   // Test: Browse the products
-  test('Browse the product on the page', async ({ page }) => {
-
-    // Create a new instance of the LoginPage object
-    const loginPage = new LoginPage(page);
+  test('Browse the product on the page', async ({
+    loginPage,
+    productsPage
+  }) => {
 
     // Login with valid credentials
     await loginPage.login(testUser.email, 'Test@2025');
-
-    // Create a new instance of the ProductsPage object
-    const productsPage = new ProductsPage(page);
 
     // View the details of the product
     await productsPage.viewProductDetails();
@@ -90,16 +68,14 @@ test.describe('OWASP Juice Shop Login Flow', () => {
   });
 
 
-  test('Add product to the basket', async ({ page }) => {
-
-    // Create a new instance of LoginPage object
-    const loginPage = new LoginPage(page);
+  test('Add product to the basket', async ({
+    loginPage,
+    productsPage,
+    checkoutPage
+  }) => {
 
     // Login using valid credentials
     await loginPage.login(testUser.email, 'Test@2025');
-
-    // Create a new instance of ProductsPage object
-    const productsPage = new ProductsPage(page);
 
     //get product name to verify it in view basket
     const productName = await productsPage.getProductName();
@@ -111,9 +87,6 @@ test.describe('OWASP Juice Shop Login Flow', () => {
     //  View the basket
     await productsPage.viewBasket();
 
-    // Create a new instance of checkOutPage object
-    const checkoutPage = new CheckoutPage(page);
-
     // verify basket and checkout button are visible
     await checkoutPage.assertBasketAndCheckoutAvailable();
 
@@ -123,25 +96,21 @@ test.describe('OWASP Juice Shop Login Flow', () => {
   });
 
 
-  test('Verify checkout', async ({ page }) => {
+  test('Verify checkout', async ({
+    loginPage,
+    productsPage,
+    checkoutPage
+  }) => {
 
-    // Create a new instance of LoginPage object
-    const loginPage = new LoginPage(page);
 
     // Login with valid credentials
     await loginPage.login(testUser.email, 'Test@2025');
-
-    // Create a new instance of ProductsPage object
-    const productsPage = new ProductsPage(page);
 
     // Add the first available product to the basket
     await productsPage.addProductToBasket();
 
     // View the basket
     await productsPage.viewBasket();
-
-    // Create a new instance of checkOutPage object
-    const checkoutPage = new CheckoutPage(page);
 
     // verify basket and checkout button are visible
     await checkoutPage.assertBasketAndCheckoutAvailable();

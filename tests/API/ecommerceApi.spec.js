@@ -1,6 +1,6 @@
-const { test, expect } = require('@playwright/test');
-const { createUser } = require('../../helpers/createUser');
-const payload = require('./payload');
+import { test, expect } from '@playwright/test';
+import { createUser } from '../../helpers/createUser.js';
+import { getLoginPayload, getBasketAddPayload, placeOrderPayload } from './payload.js';
 
 
 test.describe.serial('API Authentication', () => {
@@ -20,7 +20,7 @@ test.describe.serial('API Authentication', () => {
     test('Login and get authentication token and basketId', async ({ request }) => {
 
         // payload using the generated user's email
-        const loginPayload = payload.getLoginPayload(testUser.email);
+        const loginPayload = getLoginPayload(testUser.email);
 
         // Send login request
         const response = await request.post('/rest/user/login', {
@@ -88,7 +88,7 @@ test.describe.serial('API Authentication', () => {
     test('Add product to basket', async ({ request }) => {
 
         // get the payload
-        const addProductPayload = payload.getBasketAddPayload(basketId);
+        const addProductPayload = getBasketAddPayload(basketId);
 
         // Make POST request to add item to basket
         const response = await request.post('/api/BasketItems/', {
@@ -124,7 +124,7 @@ test.describe.serial('API Authentication', () => {
     test('Add product to basket without Authorization header returns 401', async ({ request }) => {
 
         // get the payload
-        const addProductPayload = payload.getBasketAddPayload(basketId);
+        const addProductPayload = getBasketAddPayload(basketId);
 
         // Make POST request to add item to basket
         const response = await request.post('/api/BasketItems/', {
@@ -142,7 +142,7 @@ test.describe.serial('API Authentication', () => {
     test('Test place order', async ({ request }) => {
 
         // get the payload
-        const placeOrderPayloadPayload = payload.placeOrderPayload;
+        const placeOrderPayloadPayload = placeOrderPayload;
 
         // Make POST request to add item to basket
         const response = await request.post('/b2b/v2/orders', {

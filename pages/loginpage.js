@@ -1,8 +1,9 @@
-const { expect } = require('@playwright/test');
+import { expect } from '@playwright/test';
+
 
 // loginpage.js
 
-class LoginPage {
+export class LoginPage {
 
     constructor(page) {
         this.page = page;
@@ -26,4 +27,4 @@ class LoginPage {
 
 }
 
-module.exports = LoginPage;
+//module.exports = LoginPage;

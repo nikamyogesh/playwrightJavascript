@@ -1,8 +1,8 @@
-const { expect } = require('@playwright/test');
+import { expect } from '@playwright/test';
 
 // productspage.js
 
-class ProductsPage {
+export class ProductsPage {
     constructor(page) {
         this.page = page;
         this.pageHeader = this.page.locator("//span[@class='hide-lt-sm']");//
@@ -69,4 +69,4 @@ class ProductsPage {
 
 }
 
-module.exports = ProductsPage;
+//module.exports = ProductsPage;

@@ -1,8 +1,9 @@
-const { expect } = require('@playwright/test');
+//const { expect } = require('@playwright/test');
+import { expect } from '@playwright/test';
 
 // checkoutpage.js
 
-class CheckoutPage {
+export class CheckoutPage {
     constructor(page) {
         this.page = page;
         // Basket and Checkout locators
@@ -46,7 +47,7 @@ class CheckoutPage {
 
     // Click checkout button to proceed
     async proceedToCheckout() {
-        await this.checkoutButton.click();
+        await this.checkoutButton.click({ timeout: 3000 });
     }
 
     // verify "Add New Address" section is visible
@@ -94,4 +95,4 @@ class CheckoutPage {
     }
 }
 
-module.exports = CheckoutPage;
+//module.exports = CheckoutPage;
